@@ -149,5 +149,4 @@ const handleSend = async () => {
         </Modal>
     );
 }
-
 export default AdicionaEditaPaletaModal;
