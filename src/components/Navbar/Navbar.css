@@ -70,6 +70,13 @@
       max-width: 320px;
     }
   }
+  .row {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+  }
+
+
   
   @media (max-width: 400px) {
     .Header {
@@ -83,4 +90,34 @@
     .Logo__titulo {
       font-size: 1.5em;
     }
+    
+    .Logo {
+      width: 100%;
+    }
   }
+
+
+  /* ----------- */
+
+
+.Opcoes {
+  display: flex;
+}
+
+.Paleta {
+  background: none;
+  border: none;
+  transform: translateY(-3px);
+  border-radius: 10px;
+  transition: all .5s;
+  padding: 0;
+}
+
+.Paleta--ativa {
+  background: rgba(148, 0, 211);
+}
+
+.Paleta__icone {
+  cursor: pointer;
+  transform: translateY(3px);
+}

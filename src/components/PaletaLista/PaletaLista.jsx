@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PaletaListaItem from "components/PaletaListaItem/PaletaListaItem";
 import { PaletaService } from 'services/PaletaService';
 import PaletaDetalhesModal from 'components/PaletaDetalhesModal/PaletaDetalhesModal';
 
+import { ActionMode } from "constants/index";
 
-
-function PaletaLista() {
+function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta }) {
 
       const [paletas, setPaletas] = useState([]);
 
@@ -32,28 +32,50 @@ const getLista = async () => {
 
 const getPaletaById = async (paletaId) => {
   const response = await PaletaService.getById(paletaId);
-  setPaletaModal(response);
-  // preenchendo setpaletas na useState que está acima
-}
+  const mapper = {
+    [ActionMode.NORMAL]: () => setPaletaModal(response),
+    [ActionMode.ATUALIZAR]: () => updatePaleta(response),
+    [ActionMode.DELETAR]: () => deletePaleta(response),
+  };
+  mapper[mode]();
+};
 
-
-
-
-useEffect(()=> {
+useEffect(() => {
   getLista();
-},[]);
+}, []);
+
+
+const adicionaPaletaNaLista = useCallback(
+  (paleta) => {
+    const lista = [...paletas, paleta];
+    setPaletas(lista);
+  },
+  [paletas]
+);
+
+useEffect(() => {
+  if (
+    paletaCriada &&
+    !paletas.map(({ id }) => id).includes(paletaCriada.id)
+  ) {
+    adicionaPaletaNaLista(paletaCriada);
+  }
+}, [adicionaPaletaNaLista, paletaCriada, paletas]);
+
+
 
   return (
       <div className="PaletaLista">
           {paletas.map((paleta, index) => 
-            <PaletaListaItem 
+            <PaletaListaItem
+              mode={mode} 
               key={`PaletaListaItem-${index}`} 
               paleta={paleta}
               quantidadeSelecionada={paletaSelecionada[index]}
               index={index}
               onRemove={index => removerItem(index)}
               onAdd={index => adicionarItem(index)}
-              clickItem={(paletaId) => setPaletaModal(paleta)}/>
+              clickItem={(paletaId) => getPaletaById(paletaId)}/>
         )}
         {paletaModal && <PaletaDetalhesModal paleta={paletaModal} closeModal = {() => setPaletaModal(false)} />}
 
