@@ -12,23 +12,27 @@ function Home(){
 
     const [canShowAdicionaPaletaModal, setCanShowAdicionaPaletaModal] = useState(false);
     const [paletaParaAdicionar, setPaletaParaAdicionar] = useState();
+    
     const [modoAtual, setModoAtual] = useState(ActionMode.NORMAL);
 
-
     const handleActions = (action) => {
-        const novaAcao = modoAtual === action ? ActionMode.NORMAL : action;
-        setModoAtual(novaAcao);
-      }
+      const novaAcao = modoAtual === action ? ActionMode.NORMAL : action;
+      setModoAtual(novaAcao);
+    }
+
     const [paletaParaEditar, setPaletaParaEditar] = useState();
     const [paletaParaDeletar, setPaletaParaDeletar] = useState();
 
     const handleDeletePaleta = (paletaToDelete) => {
       setPaletaParaDeletar(paletaToDelete);
     }
+    
+    
     const handleUpdatePaleta = (paletaToUpdate) => {
       setPaletaParaEditar(paletaToUpdate);
       setCanShowAdicionaPaletaModal(true);
     }
+    
 
     const handleCloseModal = () => {
       setCanShowAdicionaPaletaModal(false);
@@ -45,7 +49,7 @@ function Home(){
             <Navbar
                 mode={modoAtual} 
                 createPaleta={() => setCanShowAdicionaPaletaModal(true)}  
-                updatePaleta={() =>  handleActions(ActionMode.ATUALIZAR)}/>
+                updatePaleta={() =>  handleActions(ActionMode.ATUALIZAR)} />
 
             <div className="Home__container">    
                 <PaletaLista 
@@ -55,14 +59,15 @@ function Home(){
                     updatePaleta={handleUpdatePaleta} />
 
                 {
-                    canShowAdicionaPaletaModal && (
-                    <AdicionaEditaPaletaModal
-                        mode={modoAtual}
-                        paletaToUpdate={paletaParaEditar}
-                        closeModal={handleCloseModal}
-                    onCreatePaleta={(paleta) => setPaletaParaAdicionar(paleta)} />)
+                  canShowAdicionaPaletaModal &&
+                  <AdicionaEditaPaletaModal
+                    mode={modoAtual}
+                    paletaToUpdate={paletaParaEditar}
+                    closeModal={handleCloseModal}
+                    onCreatePaleta={(paleta) => setPaletaParaAdicionar(paleta)}
+                    />
                 }
-                </div>
+              </div>
         </div>
     );
 }

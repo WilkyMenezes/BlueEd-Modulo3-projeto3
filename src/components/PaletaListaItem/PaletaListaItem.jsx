@@ -10,7 +10,7 @@ function PaletaListaItem({paleta, quantidadeSelecionada, index, onRemove, onAdd,
     Boolean(canRender) && (<span className="PaletaListaItem__badge"> {quantidadeSelecionada} </span>);
     
     const removeButton = (canRender, index) =>
-        Boolean(canRender) && (<button disabled={mode !== ActionMode.NORMAL} className="Acoes__remover" onClick={(e)=> {e.stopPropagation(); onRemove(index);}}>remover</button>);
+        Boolean(canRender) && (<button disabled={mode !== ActionMode.NORMAL} className="__remover" onClick={(e)=> {e.stopPropagation(); onRemove(index);}}>remover</button>);
 
     const badgeAction = (canRender) => {
       if (canRender) return (<span className="PaletaListaItem__tag"> { mode } </span>);

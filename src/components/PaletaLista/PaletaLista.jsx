@@ -37,8 +37,10 @@ const getPaletaById = async (paletaId) => {
     [ActionMode.ATUALIZAR]: () => updatePaleta(response),
     [ActionMode.DELETAR]: () => deletePaleta(response),
   };
+
   mapper[mode]();
-};
+
+}
 
 useEffect(() => {
   getLista();
@@ -63,7 +65,6 @@ useEffect(() => {
 }, [adicionaPaletaNaLista, paletaCriada, paletas]);
 
 
-
   return (
       <div className="PaletaLista">
           {paletas.map((paleta, index) => 
@@ -81,7 +82,7 @@ useEffect(() => {
 
       </div>
     )
-  }
+}
 
 
 export default PaletaLista;
