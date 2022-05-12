@@ -128,5 +128,4 @@ useEffect(() => {
     )
 }
 
-
 export default PaletaLista;
