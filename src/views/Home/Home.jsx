@@ -1,16 +1,12 @@
-import "../views/Home.css";
-import PaletaLista from "../components/PaletaLista/PaletaLista";
-import Navbar from '../components/Navbar/Navbar';
+import "../Home/Home.css";
+import PaletaLista from "../../components/PaletaLista/PaletaLista";
+import Navbar from '../../components/Navbar/Navbar';
 import { useState } from "react";
 import { ActionMode } from "constants/index";
 import AdicionaEditaPaletaModal from "components/AdicionaEditaPaletaModal/AdicionaEditaPaletaModal";
 import DeletaPaletaModal from "components/DeletaPaletaModal/DeletaPaletaModal";
 import SacolaModal from "components/SacolaModal/SacolaModal";
 import { SacolaService } from "services/SacolaService";
-
-
-
-
 
 function Home(){
 
