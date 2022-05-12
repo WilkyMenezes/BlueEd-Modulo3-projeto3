@@ -87,6 +87,10 @@
   background: rgba(148, 0, 211);
 }
 
+.Paleta--deletar {
+  background: rgba(211, 0, 0);
+}
+
 
 @media (max-width: 1220px) {
   .Header {
@@ -122,3 +126,6 @@
     width: 100%;
   }
 }
+
+/*-----*/
+

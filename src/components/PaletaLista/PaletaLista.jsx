@@ -2,14 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 import PaletaListaItem from "components/PaletaListaItem/PaletaListaItem";
 import { PaletaService } from 'services/PaletaService';
 import PaletaDetalhesModal from 'components/PaletaDetalhesModal/PaletaDetalhesModal';
+import { matchByText } from "helpers/utils";
+import "./PaletaLista.css";
+
 
 import { ActionMode } from "constants/index";
 
-function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta }) {
+function PaletaLista({ paletaCriada, mode, updatePaleta, deletePaleta, paletaEditada, paletaRemovida }) {
+      const selecionadas = JSON.parse(localStorage.getItem('selecionadas')) ?? {};
 
       const [paletas, setPaletas] = useState([]);
 
-      const [paletaSelecionada, setPaletaSelecionada] = useState({});
+      const [paletasFiltradas, setPaletasFiltradas] = useState([]);
+
+      const [paletaSelecionada, setPaletaSelecionada] = useState(selecionadas);
 
       const [paletaModal, setPaletaModal] = useState(false);
 
@@ -18,6 +24,20 @@ const adicionarItem = (paletaIndex) => {
   const paleta = {[paletaIndex]: Number(paletaSelecionada[paletaIndex] || 0) +1 }
   setPaletaSelecionada({ ...paletaSelecionada,  ...paleta});
 }
+const setSelecionadas = useCallback(() => {
+  if(!paletas.length) return
+
+  const entries = Object.entries(paletaSelecionada);
+  const sacola = entries.map(arr => ({
+    paletaId: paletas[arr[0]].id,
+    quantidade: arr[1]
+  }))
+
+  localStorage.setItem('sacola', JSON.stringify(sacola))
+  localStorage.setItem('selecionadas', JSON.stringify(paletaSelecionada))
+}, [ paletaSelecionada, paletas ])
+
+
 
 const removerItem = (paletaIndex) => {
   const paleta = { [paletaIndex]: Number(paletaSelecionada[paletaIndex] || 0) -1 }
@@ -44,7 +64,7 @@ const getPaletaById = async (paletaId) => {
 
 useEffect(() => {
   getLista();
-}, []);
+}, [paletaEditada, paletaRemovida]);
 
 
 const adicionaPaletaNaLista = useCallback(
@@ -55,6 +75,19 @@ const adicionaPaletaNaLista = useCallback(
   [paletas]
 );
 
+const filtroPorTitulo = ({target}) => {
+  const lista = [...paletas].filter(({titulo}) => matchByText(titulo, target.value))
+  setPaletasFiltradas(lista);
+}
+
+
+
+useEffect(() => {
+  setSelecionadas();
+}, [ setSelecionadas, paletaSelecionada ]);
+
+
+
 useEffect(() => {
   if (
     paletaCriada &&
@@ -62,24 +95,35 @@ useEffect(() => {
   ) {
     adicionaPaletaNaLista(paletaCriada);
   }
+  setPaletasFiltradas(paletas)
 }, [adicionaPaletaNaLista, paletaCriada, paletas]);
 
 
   return (
-      <div className="PaletaLista">
-          {paletas.map((paleta, index) => 
-            <PaletaListaItem
-              mode={mode} 
-              key={`PaletaListaItem-${index}`} 
-              paleta={paleta}
-              quantidadeSelecionada={paletaSelecionada[index]}
-              index={index}
-              onRemove={index => removerItem(index)}
-              onAdd={index => adicionarItem(index)}
-              clickItem={(paletaId) => getPaletaById(paletaId)}/>
-        )}
-        {paletaModal && <PaletaDetalhesModal paleta={paletaModal} closeModal = {() => setPaletaModal(false)} />}
+      <div className="PaletaLista-Wrapper">
+        <input
+          className="PaletaLista-filtro"
+          onChange={filtroPorTitulo}
+          placeholder="Busque uma paleta pelo título" 
+        />
 
+        <div className="PaletaLista">
+              {
+                paletasFiltradas.map((paleta, index) =>
+                  <PaletaListaItem
+                    mode={mode}
+                    key={`PaletaListaItem-${index}`}
+                    paleta={paleta}
+                    quantidadeSelecionada={paletaSelecionada[index]}
+                    index={index}
+                    onAdd={index => adicionarItem(index)}
+                    onRemove={index => removerItem(index)}
+                    clickItem={(paletaId) => getPaletaById(paletaId)} />
+                )
+              }
+
+              {paletaModal && <PaletaDetalhesModal paleta={paletaModal} closeModal={() => setPaletaModal(false)} />}
+            </div>
       </div>
     )
 }
